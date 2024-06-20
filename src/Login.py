@@ -26,7 +26,6 @@ class Login(tk.Frame):
 
         self.app = app
         self.window = window
-        self.drawUi()
 
     def drawUi(self):
         self.image = Image.open(constants.LOGO_PATH)

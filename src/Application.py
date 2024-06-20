@@ -3,6 +3,7 @@ import tkinter as tk
 from src.Dashboard import Dashboard
 from src.Login import Login
 from src.State import State
+from src.Tickets import Tickets
 
 
 class Application:
@@ -15,8 +16,9 @@ class Application:
         self.state = State.LOGIN
 
         self.login = Login(self.window, self)
-
-        self.clearAll()
+        self.dashboard = Dashboard(self.window, self)
+        self.tickets = Tickets(self.currentUser)
+        self.login.drawUi()
 
         self.window.mainloop()
 
@@ -26,3 +28,6 @@ class Application:
 
     def onLoginSuccess(self, user):
         self.currentUser = user
+        self.state = State.DASHBOARD
+        self.clearAll()
+        self.dashboard.drawUi(self.tickets)
