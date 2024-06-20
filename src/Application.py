@@ -1,4 +1,6 @@
 import tkinter as tk
+
+from src.Dashboard import Dashboard
 from src.Login import Login
 from src.State import State
 
@@ -12,23 +14,15 @@ class Application:
         self.window.state('zoomed')
         self.state = State.LOGIN
 
-        self.frames = {State.LOGIN: Login(self.window, self)}
-        self.showFrame(State.LOGIN)
+        self.login = Login(self.window, self)
+
+        self.clearAll()
 
         self.window.mainloop()
 
+    def clearAll(self):
+        for widget in self.window.winfo_children():
+            widget.destroy()
+
     def onLoginSuccess(self, user):
         self.currentUser = user
-        self.showFrame(State.DASHBOARD)
-
-    def createFrame(self):
-        self.frames[State.LOGIN] = Login(self.window, self)
-        # self.frames[State.DASHBOARD] = Dashboard(self.window, self)
-
-        for frame in self.frames.values():
-            frame.grid(row=0, column=0, sticky="nsew")
-
-    def showFrame(self, state):
-        self.state = state
-        frame = self.frames[state]
-        frame.tkraise()
