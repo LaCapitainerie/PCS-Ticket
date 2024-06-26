@@ -3,7 +3,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 from requests import RequestException, Timeout
 
-from src.Tickets import Tickets
+from Class.Ticket import Ticket, fetchAllTickets
 
 
 class Dashboard(tk.Frame):
@@ -14,14 +14,13 @@ class Dashboard(tk.Frame):
         self.currentUser = None
         self.app = app
         self.window = window
-        self.tickets = Tickets(self.currentUser)
 
-    def drawUi(self, tickets):
-        self.tickets.fetchAllTickets()
+    def drawUi(self, tickets:list[Ticket]):
+        
         frameListBox = tk.Frame(self.window)
         frameListBox.place(relwidth=0.25, relheight=1.0)
 
         self.listBox = tk.Listbox(frameListBox, selectmode=tk.SINGLE)
         self.listBox.pack(fill=tk.BOTH, expand=True)
-        for ticket in self.tickets.tickets:
-            self.listBox.insert(tk.END, f"{ticket["ticket"]["description"]} - {ticket["ticket"]["state"]}")
+        for ticket in tickets:
+            self.listBox.insert(tk.END, f'{ticket["ticket"]["description"]} - {ticket["ticket"]["state"]}')

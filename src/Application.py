@@ -1,23 +1,41 @@
 import tkinter as tk
 
-from src.Dashboard import Dashboard
-from src.Login import Login
-from src.State import State
-from src.Tickets import Tickets
+from Class.User import User
+from Dashboard import Dashboard
+from Login import Login
+from State import State
+from Class.Ticket import Ticket, fetchAllTickets
 
 
-class Application:
+class Application(dict):
+
+    # -- Static Attributes -- #
+
+    user: User
+    tickets: list[Ticket]
+
+    # -- Pages -- #
+    
+    login: Login
+    dashboard: Dashboard
+
+    state: State
+
+    # -- Constructor -- #
+
     def __init__(self):
-        self.currentUser = None
+        self.currentUser:User
+
+        # -- Create the login and dashboard objects -- #
+
         self.window = tk.Tk()
         self.window.title("Paris Caretaker Service - Ticket")
-        self.window.configure(bg='black')
+        self.window.configure(bg='white')
         self.window.state('zoomed')
         self.state = State.LOGIN
 
-        self.login = Login(self.window, self)
-        self.dashboard = Dashboard(self.window, self)
-        self.tickets = Tickets(self.currentUser)
+
+
         self.login.drawUi()
 
         self.window.mainloop()
@@ -25,9 +43,3 @@ class Application:
     def clearAll(self):
         for widget in self.window.winfo_children():
             widget.destroy()
-
-    def onLoginSuccess(self, user):
-        self.currentUser = user
-        self.state = State.DASHBOARD
-        self.clearAll()
-        self.dashboard.drawUi(self.tickets)

@@ -6,7 +6,7 @@ from requests import RequestException, Timeout
 import constants
 import requests
 
-from src.User import User
+from Class.User import User
 
 
 class Login(tk.Frame):
@@ -65,21 +65,12 @@ class Login(tk.Frame):
             response = requests.post(constants.API_URL + "/user/login", json=payload)
             response.raise_for_status()
 
-            userJson = response.json()["user"]
-            user = User(userJson["id"],
-                        userJson["type"],
-                        userJson["mail"],
-                        userJson["password"],
-                        userJson["registerDate"],
-                        userJson["lastConnectionDate"],
-                        userJson["avatar"],
-                        userJson["site"],
-                        userJson["description"],
-                        userJson["firstName"],
-                        userJson["lastName"],
-                        userJson["token"])
+            userJson:User = response.json()["user"]
+
+            user = User(userJson)
             self.connexionError("")
             self.app.onLoginSuccess(user)
+
         except requests.exceptions.HTTPError as http_err:
             self.connexionError("Email ou mot de passe invalide.")
         except ConnectionError as conn_err:
