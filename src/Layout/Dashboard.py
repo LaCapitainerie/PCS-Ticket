@@ -28,6 +28,8 @@ class Dashboard(tk.Frame):
         
         frameListBox = tk.Frame(window)
         frameListBox.place(relwidth=0.25, relheight=1.0)
+        
+        self.label = tk.Label(frameListBox, text="Tickets", font=("Helvetica", 16)).pack(fill=tk.X)
 
         self.listBox = tk.Listbox(frameListBox, selectmode=tk.SINGLE)
         self.listBox.pack(fill=tk.BOTH, expand=True)
