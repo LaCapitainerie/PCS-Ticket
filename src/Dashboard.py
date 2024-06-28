@@ -1,15 +1,13 @@
-from logging import warn
 import tkinter as tk
 
-import requests
-
 from Class.Chat import ChatDTO
-from Class.Ticket import Ticket
-from Class.User import User
-import constants
 
+# -- Dashboard Class -- #
 
 class Dashboard(tk.Frame):
+
+    # -- Constructor -- #
+    
     def __init__(self, window:tk.Misc, application):
 
         # -- Attributes -- #
@@ -24,7 +22,7 @@ class Dashboard(tk.Frame):
 
     def drawUi(self, window:tk.Misc):
 
-        self.chatDTO:ChatDTO = fetchAllTickets(self.application.user.get("token", ""))
+        self.chatDTO:ChatDTO = fetchAllTickets(self.application.user.token)
         
         frameListBox = tk.Frame(window)
         frameListBox.place(relwidth=0.25, relheight=1.0)

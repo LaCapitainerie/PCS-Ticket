@@ -9,8 +9,6 @@ from Class.Ticket import Ticket
 
 class Application(dict):
 
-    
-
     # -- Constructor -- #
 
     def __init__(self):
