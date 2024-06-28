@@ -7,12 +7,11 @@ from Class.Ticket import Ticket, fetchAllTickets
 
 
 class Dashboard(tk.Frame):
-    def __init__(self, window, app):
+    def __init__(self, window, application):
         super().__init__(window)
         self.listBox = None
         self.labelEmail = None
         self.currentUser = None
-        self.app = app
         self.window = window
 
     def drawUi(self, tickets:list[Ticket]):

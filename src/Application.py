@@ -34,12 +34,30 @@ class Application(dict):
         self.window.state('zoomed')
         self.state = State.LOGIN
 
+        self.login = Login(self.window, self)
+        self.dashboard = Dashboard(self.window, self)
 
+        # -- Draw the login page -- #
 
-        self.login.drawUi()
+        self.drawLogin()
+
+        # -- Mainloop -- #
 
         self.window.mainloop()
+
+
 
     def clearAll(self):
         for widget in self.window.winfo_children():
             widget.destroy()
+
+
+    def drawLogin(self):
+        self.clearAll()
+        self.login.drawUi(window=self.window)
+        self.state = State.LOGIN
+
+    def drawDashboard(self):
+        self.clearAll()
+        self.dashboard.drawUi(self.tickets)
+        self.state = State.DASHBOARD

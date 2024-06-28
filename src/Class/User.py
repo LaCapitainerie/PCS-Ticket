@@ -1,4 +1,3 @@
-
 from typing import Literal
 
 # -- User Class -- #
@@ -23,7 +22,7 @@ class User(dict):
 
     # -- Constructor -- #
 
-    def __init__(self, user:'User'):
+    def __init__(self, user):
         self.update(user)
 
     # -- UI -- #
