@@ -4,27 +4,26 @@ from Class.User import User
 from Dashboard import Dashboard
 from Login import Login
 from State import State
-from Class.Ticket import Ticket, fetchAllTickets
+from Class.Ticket import Ticket
 
 
 class Application(dict):
 
-    # -- Static Attributes -- #
-
-    user: User
-    tickets: list[Ticket]
-
-    # -- Pages -- #
-    
-    login: Login
-    dashboard: Dashboard
-
-    state: State
-
     # -- Constructor -- #
 
     def __init__(self):
-        self.currentUser:User
+
+        # -- Static Attributes -- #
+
+        self.user: User
+        self.tickets: list[Ticket]
+
+        # -- Pages -- #
+        
+        self.login: Login
+        self.dashboard: Dashboard
+
+        self.state: State
 
         # -- Create the login and dashboard objects -- #
 
@@ -34,12 +33,30 @@ class Application(dict):
         self.window.state('zoomed')
         self.state = State.LOGIN
 
+        self.login = Login(self.window, self)
+        self.dashboard = Dashboard(self.window, self)
 
+        # -- Draw the login page -- #
 
-        self.login.drawUi()
+        self.drawLogin()
+
+        # -- Mainloop -- #
 
         self.window.mainloop()
+
+
 
     def clearAll(self):
         for widget in self.window.winfo_children():
             widget.destroy()
+
+
+    def drawLogin(self):
+        self.clearAll()
+        self.login.drawUi(window=self.window)
+        self.state = State.LOGIN
+
+    def drawDashboard(self):
+        self.clearAll()
+        self.dashboard.drawUi(window=self.window)
+        self.state = State.DASHBOARD
