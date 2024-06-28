@@ -4,27 +4,28 @@ from Class.User import User
 from Dashboard import Dashboard
 from Login import Login
 from State import State
-from Class.Ticket import Ticket, fetchAllTickets
+from Class.Ticket import Ticket
 
 
 class Application(dict):
 
-    # -- Static Attributes -- #
-
-    user: User
-    tickets: list[Ticket]
-
-    # -- Pages -- #
     
-    login: Login
-    dashboard: Dashboard
-
-    state: State
 
     # -- Constructor -- #
 
     def __init__(self):
-        self.currentUser:User
+
+        # -- Static Attributes -- #
+
+        self.user: User
+        self.tickets: list[Ticket]
+
+        # -- Pages -- #
+        
+        self.login: Login
+        self.dashboard: Dashboard
+
+        self.state: State
 
         # -- Create the login and dashboard objects -- #
 
@@ -59,5 +60,5 @@ class Application(dict):
 
     def drawDashboard(self):
         self.clearAll()
-        self.dashboard.drawUi(self.tickets)
+        self.dashboard.drawUi(window=self.window)
         self.state = State.DASHBOARD

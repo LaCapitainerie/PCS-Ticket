@@ -1,25 +1,22 @@
+from uuid import UUID
 from Class.Ticket import Ticket
 from Class.User import User
 from Class.Message import Message
 
 # -- Class Chat -- #
 
-class Chat(dict):
-
-    # -- Attributes -- #
-
-    id: str
-    view: bool
-    ticket: Ticket
-    userId: list[User]
-    message: list[Message]
+class Chat:
 
     # -- Constructor -- #
 
     def __init__(self, chat):
-        self.update(chat)
+        self.id:UUID = chat["id"]
+        self.view:bool = chat["view"]
+        self.ticket = Ticket(chat["ticket"])
+        self.userId = [User(user) for user in chat["userId"]]
+        self.message = [Message(message) for message in chat["message"]]
 
-    # -- UI -- #
+# -- ChatDTO Class -- #
 
-    def drawUi(self):
-        pass
+class ChatDTO(dict):
+    chat:list[Chat]

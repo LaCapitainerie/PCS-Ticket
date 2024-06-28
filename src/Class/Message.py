@@ -1,19 +1,16 @@
 from typing import Literal
+from uuid import UUID
 
 # -- Message Class -- #
 
-class Message(dict):
-
-    # -- Attributes -- #
-
-    id:str
-    content:str
-    date:str
-    type:Literal['text', 'image']
-    userId:str
-    chatId:str
+class Message:
 
     # -- Constructor -- #
 
     def __init__(self, message):
-        self.update(message)
+        self.id:UUID = message["id"]
+        self.content:str = message["content"]
+        self.date:str = message["date"]
+        self.type:Literal["paiement"] = message["type"]
+        self.userId:UUID = message["userId"]
+        self.chatId:UUID = message["chatId"]

@@ -1,56 +1,8 @@
-from logging import warn
-import tkinter as tk
-
-import requests
-
-from Class.Chat import ChatDTO
-from Class.Ticket import Ticket
-from Class.User import User
-import constants
-
-
-class Dashboard(tk.Frame):
-    def __init__(self, window:tk.Misc, application):
-
-        # -- Attributes -- #
-
-        self.application = application
-
-        super().__init__(window)
-        self.listBox = None
-        self.labelEmail = None
-        self.currentUser = None
-
-
-    def drawUi(self, window:tk.Misc):
-
-        self.chatDTO:ChatDTO = fetchAllTickets(self.application.user.get("token", ""))
-        
-        frameListBox = tk.Frame(window)
-        frameListBox.place(relwidth=0.25, relheight=1.0)
-
-        self.listBox = tk.Listbox(frameListBox, selectmode=tk.SINGLE)
-        self.listBox.pack(fill=tk.BOTH, expand=True)
-
-        for chat in self.chatDTO["chat"]:
-            self.listBox.insert(tk.END, f'{chat["ticket"]["description"]} - {chat["ticket"]["state"]}')
-
-
-def fetchAllTickets(usertoken:str) -> ChatDTO:
-
-    # usertoken = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpZFVzZXIiOiIxMjNlNDU2Ny1lODliLTEyZDMtYTQ1Ni00MjYyMTQxNzQwMDAiLCJleHAiOjE3NTAzMzI4MDl9.FShzAVpmmEOTSfvL1NyQWjfzIP48EOM-qjuumeMAbkJz_gnYYHEnc3gyNC-8PQdtaAN-TnM2tTtJviD_4oeCZw"
-    
-    # header = {
-    #     "Authorization": usertoken
-    # }
-
-    # response = requests.get(constants.API_URL + "/administration/ticket", headers=header)
-    
-    return {
+{
 	"chat": [
 		{
 			"id": "e02934d9-cb1b-475f-9972-90816d402518",
-			"view": False, # type: ignore
+			"view": false,
 			"ticket": {
 				"id": "123e4567-e89b-12d3-a486-426614174001",
 				"type": "paiement",

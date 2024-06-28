@@ -9,7 +9,7 @@ import requests
 from Class.User import User
 
 class Login(tk.Frame):
-    def __init__(self, window, application):
+    def __init__(self, window:tk.Misc, application):
         
         # -- Attributes -- #
 
@@ -27,6 +27,7 @@ class Login(tk.Frame):
         self.errorLabel = None
         if not os.path.isfile(constants.LOGO_PATH):
             raise FileNotFoundError(f"File '{constants.LOGO_PATH}' not found")
+
 
     def drawUi(self, window:tk.Misc):
         self.image = Image.open(constants.LOGO_PATH)
@@ -52,12 +53,27 @@ class Login(tk.Frame):
         self.errorLabel = tk.Label(window, text="", fg="red", bg="black")
         self.errorLabel.pack(side=tk.TOP, pady=10)
 
-    def connexionError(self, error):
-        self.errorLabel.config(text=error) # type: ignore
 
     def login(self) -> User | None:
+
+        # -- Dev -- #
+
+        user = User({"token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpZFVzZXIiOiIxMjNlNDU2Ny1lODliLTEyZDMtYTQ1Ni00MjYyMTQxNzQwMDAiLCJleHAiOjE3NTAzMzI4MDl9.FShzAVpmmEOTSfvL1NyQWjfzIP48EOM-qjuumeMAbkJz_gnYYHEnc3gyNC-8PQdtaAN-TnM2tTtJviD_4oeCZw"})
+
+        self.application.user = user
+
+        self.application.drawDashboard()
+
+        return user
+
+
+
         email = self.entryEmail.get() # type: ignore
         password = self.entryPassword.get() # type: ignore
+
+        def connexionError(error):
+            self.errorLabel.config(text=error) # type: ignore
+
         try:
             payload = {
                 "mail": email,
@@ -66,28 +82,21 @@ class Login(tk.Frame):
             response = requests.post(constants.API_URL + "/user/login", json=payload)
             response.raise_for_status()
 
-            userJson:User = response.json().get("user", {})
+            userJson:User = User(response.json().get("user", {}))
 
-            user = User(userJson)
-            self.connexionError("")
+            connexionError("")
 
-            self.application.user = user
+            self.application.user = userJson
 
             self.application.drawDashboard()
 
         except requests.exceptions.HTTPError:
-            self.connexionError("Email ou mot de passe invalide.")
+            connexionError("Email ou mot de passe invalide.")
         except ConnectionError:
-            self.connexionError("Erreur de connexion")
+            connexionError("Erreur de connexion")
         except Timeout:
-            self.connexionError("Délai d'attente dépassé")
+            connexionError("Délai d'attente dépassé")
         except RequestException:
-            self.connexionError("Une erreur s'est produite lors de la requête")
+            connexionError("Une erreur s'est produite lors de la requête")
         finally:
             return None
-
-    def tkraise(self):
-        pass
-
-    def grid(self, row, column, sticky):
-        pass
