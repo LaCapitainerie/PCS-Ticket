@@ -57,7 +57,27 @@ class Login(tk.Frame):
 
         # -- Dev -- #
 
-        # user = User({"token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpZFVzZXIiOiIxMjNlNDU2Ny1lODliLTEyZDMtYTQ1Ni00MjYyMTQxNzQwMDAiLCJleHAiOjE3NTAzMzI4MDl9.FShzAVpmmEOTSfvL1NyQWjfzIP48EOM-qjuumeMAbkJz_gnYYHEnc3gyNC-8PQdtaAN-TnM2tTtJviD_4oeCZw"})
+        user = User({
+            "id": "123e4567-e89b-12d3-a456-426614174000",
+            "type": "admin",
+            "mail": "",
+            "password": "",
+            "registerdate": "",
+            "lastConnectionDate": "",
+            "avatar": "",
+            "description": "",
+            "firstName": "",
+            "lastName": "",
+            "nickname": "",
+            "phoneNumber": "",
+            "token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpZFVzZXIiOiIxMjNlNDU2Ny1lODliLTEyZDMtYTQ1Ni00MjYyMTQxNzQwMDAiLCJleHAiOjE3NTAzMzI4MDl9.FShzAVpmmEOTSfvL1NyQWjfzIP48EOM-qjuumeMAbkJz_gnYYHEnc3gyNC-8PQdtaAN-TnM2tTtJviD_4oeCZw"
+        })
+
+        self.application.user = user
+
+        self.application.drawDashboard()
+
+        return None
 
         email = self.entryEmail.get() # type: ignore
         password = self.entryPassword.get() # type: ignore

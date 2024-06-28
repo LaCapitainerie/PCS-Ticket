@@ -22,6 +22,8 @@ class Dashboard(tk.Frame):
 
     def drawUi(self, window:tk.Misc):
 
+		# -- Frame -- #
+
         self.chatDTO:ChatDTO = fetchAllTickets(self.application.user.token)
         
         frameListBox = tk.Frame(window)

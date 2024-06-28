@@ -1,3 +1,4 @@
 .idea/
 src/__pycache__/
 src/Class/__pycache__/
+src/Layout/__pycache__/
