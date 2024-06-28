@@ -1,9 +1,9 @@
 import tkinter as tk
 
 from Class.User import User
-from Dashboard import Dashboard
-from Login import Login
-from State import State
+from Layout.Dashboard import Dashboard
+from Layout.Login import Login
+from constants import State
 from Class.Ticket import Ticket
 
 
@@ -44,12 +44,9 @@ class Application(dict):
 
         self.window.mainloop()
 
-
-
     def clearAll(self):
         for widget in self.window.winfo_children():
             widget.destroy()
-
 
     def drawLogin(self):
         self.clearAll()
@@ -60,3 +57,10 @@ class Application(dict):
         self.clearAll()
         self.dashboard.drawUi(window=self.window)
         self.state = State.DASHBOARD
+
+
+
+
+
+if __name__ == "__main__":
+    Application()

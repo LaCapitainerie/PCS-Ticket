@@ -1,7 +1,6 @@
 import os
 import tkinter as tk
 from PIL import Image, ImageTk
-from requests import RequestException, Timeout
 
 import constants
 import requests
@@ -71,12 +70,10 @@ class Login(tk.Frame):
                 "mail": email,
                 "password": password
             }
-            response = requests.post(constants.API_URL + "/user/login", json=payload)
+            response = requests.post(constants.API_URL + "/administration/login", json=payload)
             response.raise_for_status()
 
             userJson:User = User(response.json().get("user", {}))
-
-            connexionError("")
 
             self.application.user = userJson
 
@@ -84,11 +81,11 @@ class Login(tk.Frame):
 
         except requests.exceptions.HTTPError:
             connexionError("Email ou mot de passe invalide.")
-        except ConnectionError:
+        except requests.ConnectionError:
             connexionError("Erreur de connexion")
-        except Timeout:
+        except requests.Timeout:
             connexionError("Délai d'attente dépassé")
-        except RequestException:
+        except requests.RequestException:
             connexionError("Une erreur s'est produite lors de la requête")
         finally:
             return None

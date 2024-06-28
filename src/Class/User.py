@@ -8,16 +8,16 @@ class User:
     # -- Constructor -- #
 
     def __init__(self, user):
-        self.id:UUID = user.get("id", "")
-        self.type:Literal['traveler', 'provider', 'lessor', 'admin'] = user.get("type", "")
-        self.mail:str = user.get("mail", "")
-        self.password:str = user.get("password", "")
-        self.registerdate:str = user.get("registerdate", "")
-        self.lastConnectionDate:str = user.get("lastConnectionDate", "")
-        self.avatar:str = user.get("avatar", "")
-        self.description:str = user.get("description", "")
-        self.firstName:str = user.get("firstName", "")
-        self.lastName:str = user.get("lastName", "")
-        self.nickname:str = user.get("nickname", "")
-        self.phoneNumber:str = user.get("phoneNumber", "")
-        self.token:str = user.get("token", "")
+        self.id:UUID = user["id"]
+        self.type:Literal['traveler', 'provider', 'lessor', 'admin'] = user["type"]
+        self.mail:str = user["mail"]
+        self.password:str = user["password"]
+        self.registerdate:str = user["registerdate"]
+        self.lastConnectionDate:str = user["lastConnectionDate"]
+        self.avatar:str = user["avatar"]
+        self.description:str = user["description"]
+        self.firstName:str = user["firstName"]
+        self.lastName:str = user["lastName"]
+        self.nickname:str = user["nickname"]
+        self.phoneNumber:str = user["phoneNumber"]
+        self.token:str = user["token"]
