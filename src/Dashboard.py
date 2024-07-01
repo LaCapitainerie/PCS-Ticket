@@ -1,4 +1,3 @@
-import select
 import tkinter as tk
 from tkinter import Tk, ttk
 import requests
@@ -71,13 +70,18 @@ def dashboard_ui(root: Tk, token: str = "", our_user: dict = {}):
     admintoken = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpZFVzZXIiOiIxMjNlNDU2Ny1lODliLTEyZDMtYTQ1Ni00MjYyMTQxNzQwMDAiLCJleHAiOjE3NTAzMzI4MDl9.FShzAVpmmEOTSfvL1NyQWjfzIP48EOM-qjuumeMAbkJz_gnYYHEnc3gyNC-8PQdtaAN-TnM2tTtJviD_4oeCZw"
 
     # Fetch tickets using the provided token (example implementation)
-    tickets = fetchAllTickets(
-        admintoken
-    ).get("chat", [])
+    tickets = fetchAllTickets(admintoken).get("chat", [])
 
     # Main UI code as defined before
     main_frame = tk.Frame(root)
     main_frame.pack(fill=tk.BOTH, expand=True)
+
+    # Top Frame for deconnexion button
+    top_frame = tk.Frame(root)
+    top_frame.pack(side=tk.TOP, fill=tk.X)
+    
+    deconnexion_button = tk.Button(top_frame, text="Deconnexion", command=root.destroy)
+    deconnexion_button.pack(side=tk.RIGHT, padx=10, pady=10)
 
     # Left Sidebar Frame
     sidebar_frame = tk.Frame(main_frame, bg="#F5F5F5")
@@ -86,6 +90,11 @@ def dashboard_ui(root: Tk, token: str = "", our_user: dict = {}):
     # Search bar
     search_entry = ttk.Entry(sidebar_frame, width=50)
     search_entry.pack(padx=10, pady=10)
+
+    # Dropdown list for state filter
+    state_filter = ttk.Combobox(sidebar_frame, values=["All", "progress", "open", "closed"])
+    state_filter.current(0)
+    state_filter.pack(padx=10, pady=10)
 
     # Listbox for tickets
     ticket_listbox = tk.Listbox(sidebar_frame)
@@ -146,12 +155,10 @@ def dashboard_ui(root: Tk, token: str = "", our_user: dict = {}):
 
         chat_history.config(state=tk.DISABLED)
 
-
     def send_message(event=None):
         message = chat_entry.get()
 
         if message:
-
             r = requests.post(
                 'http://localhost:8080/api/chat',
                 headers={
@@ -195,9 +202,19 @@ def dashboard_ui(root: Tk, token: str = "", our_user: dict = {}):
 
         fetch_message()
 
-    # Populate Listbox with tickets
-    for index, ticket in enumerate(tickets):
-        ticket_listbox.insert(index, f'{ticket["ticket"]["description"]} ({ticket["ticket"]["state"]})')
+    def populate_listbox():
+        ticket_listbox.delete(0, tk.END)
+        for index, ticket in enumerate(filtered_tickets()):
+            ticket_listbox.insert(index, f'{ticket["ticket"]["description"]} ({ticket["ticket"]["state"]})')
+
+    def filtered_tickets():
+        search_text = search_entry.get().lower()
+        state_text = state_filter.get().lower()
+        return [
+            ticket for ticket in tickets
+            if search_text in ticket["ticket"]["description"].lower() and
+            (state_text == "all" or ticket["ticket"]["state"].lower() == state_text)
+        ]
 
     def on_ticket_select(event):
         selected_index = ticket_listbox.curselection()
@@ -205,6 +222,10 @@ def dashboard_ui(root: Tk, token: str = "", our_user: dict = {}):
             selected_ticket = tickets[selected_index[0]]
             display_ticket_details(selected_ticket)
 
+    search_entry.bind("<KeyRelease>", lambda event: populate_listbox())
+    state_filter.bind("<<ComboboxSelected>>", lambda event: populate_listbox())
+
+    populate_listbox()
     ticket_listbox.bind("<<ListboxSelect>>", on_ticket_select)
 
     return main_frame
