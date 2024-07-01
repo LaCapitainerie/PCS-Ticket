@@ -1,94 +1,84 @@
-import os
 import tkinter as tk
 from PIL import Image, ImageTk
-from requests import RequestException, Timeout
 
-import constants
+from Dashboard import dashboard_ui
 import requests
 
-from Class.User import User
 
-class Login(tk.Frame):
-    def __init__(self, window:tk.Misc, application):
-        
-        # -- Attributes -- #
+def login_ui(window:tk.Tk):
+    window.state('zoomed')
 
-        self.application = application
+    image = Image.open("./resources/logo.png")
+    imagetk = ImageTk.PhotoImage(image)
+    labelImage = tk.Label(window, image=imagetk) # type: ignore
+    labelImage.pack(side=tk.TOP, pady=10)
 
-        super().__init__(window)
-        self.button_login = None
-        self.entryPassword = None
-        self.labelPassword = None
-        self.entryEmail = None
-        self.labelEmail = None
-        self.labelImage = None
-        self.imagetk = None
-        self.image = None
-        self.errorLabel = None
-        if not os.path.isfile(constants.LOGO_PATH):
-            raise FileNotFoundError(f"File '{constants.LOGO_PATH}' not found")
+    labelEmail = tk.Label(window, text="Email :", fg="white", bg="black")
+    labelEmail.pack(side=tk.TOP, pady=10)
 
+    entryEmail = tk.Entry(window, width=40)
+    entryEmail.pack()
 
-    def drawUi(self, window:tk.Misc):
-        self.image = Image.open(constants.LOGO_PATH)
-        self.imagetk = ImageTk.PhotoImage(self.image)
-        self.labelImage = tk.Label(window, image=self.imagetk) # type: ignore
-        self.labelImage.pack(side=tk.TOP, pady=10)
+    labelPassword = tk.Label(window, text="Mot de passe :", fg="white", bg="black")
+    labelPassword.pack(side=tk.TOP, pady=10)
 
-        self.labelEmail = tk.Label(window, text="Email :", fg="white", bg="black")
-        self.labelEmail.pack(side=tk.TOP, pady=10)
+    entryPassword = tk.Entry(window, show="*", width=40)
+    entryPassword.pack()
 
-        self.entryEmail = tk.Entry(window, width=40)
-        self.entryEmail.pack()
-
-        self.labelPassword = tk.Label(window, text="Mot de passe :", fg="white", bg="black")
-        self.labelPassword.pack(side=tk.TOP, pady=10)
-
-        self.entryPassword = tk.Entry(window, show="*", width=40)
-        self.entryPassword.pack()
-
-        self.button_login = tk.Button(window, text="Connexion", command=self.login)
-        self.button_login.pack(side=tk.TOP, pady=10)
-
-        self.errorLabel = tk.Label(window, text="", fg="red", bg="black")
-        self.errorLabel.pack(side=tk.TOP, pady=10)
-
-
-    def login(self) -> User | None:
-
-        # -- Dev -- #
-
-        # user = User({"token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpZFVzZXIiOiIxMjNlNDU2Ny1lODliLTEyZDMtYTQ1Ni00MjYyMTQxNzQwMDAiLCJleHAiOjE3NTAzMzI4MDl9.FShzAVpmmEOTSfvL1NyQWjfzIP48EOM-qjuumeMAbkJz_gnYYHEnc3gyNC-8PQdtaAN-TnM2tTtJviD_4oeCZw"})
-
-        email = self.entryEmail.get() # type: ignore
-        password = self.entryPassword.get() # type: ignore
-
-        def connexionError(error):
-            self.errorLabel.config(text=error) # type: ignore
+    def login():
+        email = entryEmail.get()
+        password = entryPassword.get()
 
         try:
             payload = {
-                "mail": email,
-                "password": password
+                "mail": "2emecompte@gmail.com",#email,
+                "password": "SuperStrongP@ssw0rd",#password
             }
-            response = requests.post(constants.API_URL + "/user/login", json=payload)
-            response.raise_for_status()
+            response = requests.post("http://localhost:8080/api" + "/user/login", json=payload)
 
-            userJson:User = User(response.json().get("user", {}))
+            if response.status_code == 401:
+                print("Accès non autorisé")
+                errorLabel.config(text="Accès non autorisé")
+                raise Exception("Unauthorized")
+            else:
+                print(response.status_code)
 
-            connexionError("")
+            response.raise_for_status()  # Raise HTTPError for bad responses
 
-            self.application.user = userJson
-
-            self.application.drawDashboard()
+            # If login is successful, return the user object
+            return response.json().get("user", {})
 
         except requests.exceptions.HTTPError:
-            connexionError("Email ou mot de passe invalide.")
-        except ConnectionError:
-            connexionError("Erreur de connexion")
-        except Timeout:
-            connexionError("Délai d'attente dépassé")
-        except RequestException:
-            connexionError("Une erreur s'est produite lors de la requête")
-        finally:
-            return None
+            print(f"Email ou mot de passe invalide. {email} {password}")
+        except requests.exceptions.ConnectionError:
+            print("Erreur de connexion")
+        except requests.exceptions.Timeout:
+            print("Délai d'attente dépassé")
+        except requests.exceptions.RequestException:
+            print("Une erreur s'est produite lors de la requête")
+        except Exception as e:
+            print(e)
+
+        return None
+
+    button_login = tk.Button(window, text="Connexion", command=lambda: handle_login(window))
+    button_login.pack(side=tk.TOP, pady=10)
+
+    def handle_login(window: tk.Misc):
+        user = login()
+        if user:
+            # Destroy the current login UI
+            window.destroy()
+
+            # Initialize the dashboard UI with the user token
+            root = tk.Tk()
+            root.title("Dashboard")
+            dashboard_ui(root)  # Pass the user token to the dashboard UI
+            root.mainloop()
+
+        elif errorLabel.cget("text") == "":
+            # Display login error message
+            errorLabel.config(text="Email ou mot de passe invalide.")
+
+    errorLabel = tk.Label(window, text="", fg="red", bg="black")
+    errorLabel.pack(side=tk.TOP, pady=10)
