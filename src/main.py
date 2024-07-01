@@ -9,6 +9,6 @@ window.state('zoomed')
 
 usertoken = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpZFVzZXIiOiI5ODU3NTczYi00NDM4LTQ3MTQtYTIyYy04ZGEwNTcxMTZjOWYiLCJleHAiOjE3MjA0NjU1NDZ9.Lg1UpJZkAlggwJj9GH1vnaESqavTqH8uafRsURLSK5KDad-bWQeXxn-exx0EvhkkgeLVwx3EMUXOrfIGE_kKtQ"
 
-dashboard_ui(window, usertoken)
+login_ui(window)
 
 window.mainloop()

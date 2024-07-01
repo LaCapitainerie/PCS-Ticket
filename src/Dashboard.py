@@ -4,67 +4,20 @@ import requests
 
 # Mock function to replace fetchAllTickets
 def fetchAllTickets(usertoken: str):
-    return {
-        "chat": [
-            {
-                "id": "e02934d9-cb1b-475f-9972-90816d402518",
-                "view": False,  # type: ignore
-                "ticket": {
-                    "id": "123e4567-e89b-12d3-a486-426614174001",
-                    "type": "paiement",
-                    "state": "progress",
-                    "description": "Problème avec le serveur",
-                    "chatId": "e02934d9-cb1b-475f-9972-90816d402518"
-                },
-                "userId": [
-                    {
-                        "id": "123e4567-e89b-12d3-a456-426214174000",
-                        "type": "admin",
-                        "mail": "admin@gmail.com",
-                        "password": "",
-                        "registerDate": "2024-06-18T01:44:57.071232+02:00",
-                        "lastConnectionDate": "2024-06-28T12:24:41.684531+02:00",
-                        "avatar": "oui.png",
-                        "site": "Paris",
-                        "description": "Premier administrateur !",
-                        "firstName": "",
-                        "lastName": "",
-                        "phoneNumber": "0669902851",
-                        "nickname": "administrateur",
-                        "token": ""
-                    },
-                    {
-                        "id": "5fb3b5ce-84e1-43f0-890f-3632dbb2d741",
-                        "type": "provider",
-                        "mail": "kerian.bourdin@outlook.com",
-                        "password": "",
-                        "registerDate": "2024-06-07T03:00:07.866755+02:00",
-                        "lastConnectionDate": "2024-06-20T11:00:40.01206+02:00",
-                        "avatar": "",
-                        "site": "",
-                        "description": "",
-                        "firstName": "",
-                        "lastName": "",
-                        "phoneNumber": "0629240719",
-                        "nickname": "",
-                        "token": ""
-                    }
-                ],
-                "message": [
-                    {
-                        "id": "123e4567-e89b-98d3-a456-426614174002",
-                        "content": "Bonjour, je voulais savoir si vous acceptez paypal ?",
-                        "date": "2024-06-20T04:11:00.597749Z",
-                        "type": "text",
-                        "userId": "5fb3b5ce-84e1-43f0-890f-3632dbb2d741",
-                        "chatId": "e02934d9-cb1b-475f-9972-90816d402518"
-                    }
-                ]
-            }
-        ]
-    }
 
-def dashboard_ui(root: Tk, token: str = "", our_user: dict = {}):
+    r = requests.get(
+        'http://localhost:8080/api/ticket',
+        headers={
+            "Authorization": usertoken,
+        }
+    )
+
+    if r.status_code != 200:
+        return {}
+
+    return r.json()
+
+def dashboard_ui(root: Tk, our_user: dict = {}):
     root.state('zoomed')
 
     admintoken = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpZFVzZXIiOiIxMjNlNDU2Ny1lODliLTEyZDMtYTQ1Ni00MjYyMTQxNzQwMDAiLCJleHAiOjE3NTAzMzI4MDl9.FShzAVpmmEOTSfvL1NyQWjfzIP48EOM-qjuumeMAbkJz_gnYYHEnc3gyNC-8PQdtaAN-TnM2tTtJviD_4oeCZw"
@@ -80,6 +33,10 @@ def dashboard_ui(root: Tk, token: str = "", our_user: dict = {}):
     top_frame = tk.Frame(root)
     top_frame.pack(side=tk.TOP, fill=tk.X)
     
+    # Logged in as label
+    logged_in_label = tk.Label(top_frame, text=f"Logged in as {our_user.get('mail')}", font=("Arial", 12))
+    logged_in_label.pack(side=tk.LEFT, padx=10, pady=10)
+
     deconnexion_button = tk.Button(top_frame, text="Deconnexion", command=root.destroy)
     deconnexion_button.pack(side=tk.RIGHT, padx=10, pady=10)
 
@@ -162,7 +119,7 @@ def dashboard_ui(root: Tk, token: str = "", our_user: dict = {}):
             r = requests.post(
                 'http://localhost:8080/api/chat',
                 headers={
-                    "Authorization": token,
+                    "Authorization": our_user.get("token"),
                 },
                 json={
                     "userId": [

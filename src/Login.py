@@ -73,7 +73,7 @@ def login_ui(window:tk.Tk):
             # Initialize the dashboard UI with the user token
             root = tk.Tk()
             root.title("Dashboard")
-            dashboard_ui(root)  # Pass the user token to the dashboard UI
+            dashboard_ui(root, user)  # Pass the user token to the dashboard UI
             root.mainloop()
 
         elif errorLabel.cget("text") == "":
