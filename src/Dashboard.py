@@ -1,12 +1,13 @@
 import tkinter as tk
 from tkinter import Tk, ttk
+from turtle import st
 import requests
 
 # Mock function to replace fetchAllTickets
 def fetchAllTickets(usertoken: str):
 
     r = requests.get(
-        'http://localhost:8080/api/ticket',
+        'http://77.237.246.8:8080/api/ticket',
         headers={
             "Authorization": usertoken,
         }
@@ -93,6 +94,53 @@ def dashboard_ui(root: Tk, our_user: dict = {}):
     chat_entry = tk.Entry(content_frame, width=50)
     chat_entry.pack(pady=10)
 
+
+    # -- Input fields for ticket details { "id", "type", "state", "description", "chatId" }-- #
+
+    id_detail_frame = tk.Frame(details_frame)
+    id_detail_frame.pack(anchor=tk.W, pady=2)
+    id_label = tk.Label(id_detail_frame, text="id:", font=("Arial", 12, "bold"))
+    id_label.pack(side=tk.LEFT)
+
+    id_value = tk.Entry(id_detail_frame, width=50)
+    id_value.pack(side=tk.LEFT)
+
+
+    type_detail_frame = tk.Frame(details_frame)
+    type_detail_frame.pack(anchor=tk.W, pady=2)
+    type_label = tk.Label(type_detail_frame, text="type:", font=("Arial", 12, "bold"))
+    type_label.pack(side=tk.LEFT)
+
+    type_value = tk.Entry(type_detail_frame, width=50)
+    type_value.pack(side=tk.LEFT)
+
+
+    state_detail_frame = tk.Frame(details_frame)
+    state_detail_frame.pack(anchor=tk.W, pady=2)
+    state_label = tk.Label(state_detail_frame, text="state:", font=("Arial", 12, "bold"))
+    state_label.pack(side=tk.LEFT)
+
+    state_value = tk.Entry(state_detail_frame, width=50)
+    state_value.pack(side=tk.LEFT)
+
+
+    description_detail_frame = tk.Frame(details_frame)
+    description_detail_frame.pack(anchor=tk.W, pady=2)
+    description_label = tk.Label(description_detail_frame, text="description:", font=("Arial", 12, "bold"))
+    description_label.pack(side=tk.LEFT)
+    
+    description_value = tk.Entry(description_detail_frame, width=50)
+    description_value.pack(side=tk.LEFT)
+
+
+    chatId_detail_frame = tk.Frame(details_frame)
+    chatId_detail_frame.pack(anchor=tk.W, pady=2)
+    chatId_label = tk.Label(chatId_detail_frame, text="chatId:", font=("Arial", 12, "bold"))
+    chatId_label.pack(side=tk.LEFT)
+
+    chatId_value = tk.Entry(chatId_detail_frame, width=50)
+    chatId_value.pack(side=tk.LEFT)
+
     global selected_ticket
     selected_ticket = {}
 
@@ -101,11 +149,13 @@ def dashboard_ui(root: Tk, our_user: dict = {}):
         chat_history.delete("1.0", tk.END)
 
         r = requests.get(
-            'http://localhost:8080/api/chat/' + tickets[ticket_listbox.curselection()[0]]["id"],
+            'http://77.237.246.8:8080/api/chat/' + tickets[ticket_listbox.curselection()[0]]["id"],
             headers={
                 "Authorization": admintoken,
             }
         )
+
+        print("retreiving messages", r.json())
 
         for message in r.json()["chat"]["message"]:
             chat_history.insert(tk.END, f'{message["userId"]}: {message["content"]}\n')
@@ -117,7 +167,7 @@ def dashboard_ui(root: Tk, our_user: dict = {}):
 
         if message:
             r = requests.post(
-                'http://localhost:8080/api/chat',
+                'http://77.237.246.8:8080/api/chat',
                 headers={
                     "Authorization": our_user.get("token"),
                 },
@@ -142,20 +192,54 @@ def dashboard_ui(root: Tk, our_user: dict = {}):
     send_button = tk.Button(content_frame, text="Send", command=send_message)
     send_button.pack()
 
+
+    def save_ticket():
+        print("Saving ticket")
+
+        returnTicket = {
+            "id": id_value.get(),
+            "type": type_value.get(),
+            "state": state_value.get(),
+            "description": description_value.get(),
+            "chatId": chatId_value.get()
+        }
+
+        print(returnTicket)
+
+        r = requests.put(
+                'http://localhost:8080/api/ticket/' + id_value.get(),
+                headers={
+                    "Authorization": our_user.get("token"),
+                },
+                json=returnTicket
+            )
+        
+        print(r.json())
+
+    # Save button
+    save_button = tk.Button(details_frame, text="Save", command=save_ticket)
+    save_button.pack(pady=10)
+    
+
     def display_ticket_details(ticket):
         title_label.config(text=f'{ticket["ticket"]["type"]} {ticket["ticket"]["state"]}')
         status_value.config(text="Open")
 
-        for widget in details_frame.winfo_children():
-            widget.destroy()
+        # Clear existing value in the entry widget before inserting new value
+        id_value.delete(0, tk.END)
+        id_value.insert(tk.END, ticket["ticket"].get("id", "N/A"))
 
-        for label_text, value_text in ticket["ticket"].items():
-            detail_frame = tk.Frame(details_frame)
-            detail_frame.pack(anchor=tk.W, pady=2)
-            label = tk.Label(detail_frame, text=f"{label_text}:", font=("Arial", 12, "bold"))
-            label.pack(side=tk.LEFT)
-            value = tk.Label(detail_frame, text=value_text, font=("Arial", 12))
-            value.pack(side=tk.LEFT)
+        type_value.delete(0, tk.END)
+        type_value.insert(tk.END, ticket["ticket"].get("type", "N/A"))
+
+        state_value.delete(0, tk.END)
+        state_value.insert(tk.END, ticket["ticket"].get("state", "N/A"))
+
+        description_value.delete(0, tk.END)
+        description_value.insert(tk.END, ticket["ticket"].get("description", "N/A"))
+
+        chatId_value.delete(0, tk.END)
+        chatId_value.insert(tk.END, ticket["ticket"].get("chatId", "N/A"))
 
         fetch_message()
 
