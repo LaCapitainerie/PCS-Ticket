@@ -214,7 +214,10 @@ def dashboard_ui(root: Tk, our_user: dict = {}):
                 json=returnTicket
             )
         
-        print(r.json())
+        if r.status_code == 200:
+            print("Ticket updated")
+
+            fetchAllTickets(admintoken)
 
     # Save button
     save_button = tk.Button(details_frame, text="Save", command=save_ticket)
