@@ -7,10 +7,8 @@ window.title("Paris Caretaker Service - Ticket")
 window.configure(bg='#F0F0F0')
 window.state('zoomed')
 
-usertoken = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpZFVzZXIiOiI5ODU3NTczYi00NDM4LTQ3MTQtYTIyYy04ZGEwNTcxMTZjOWYiLCJleHAiOjE3MjA0NjU1NDZ9.Lg1UpJZkAlggwJj9GH1vnaESqavTqH8uafRsURLSK5KDad-bWQeXxn-exx0EvhkkgeLVwx3EMUXOrfIGE_kKtQ"
-
-user = {'id': '6930e6ec-758c-48e0-815e-d24b2ae6f9ce', 'type': 'lessor', 'mail': 'lessor@gmail.com', 'password': '', 'registerDate': '2024-07-02T14:58:37.609712+02:00', 'lastConnectionDate': '2024-07-04T20:32:00.107468+02:00', 'avatar': 'https://th.bing.com/th/id/OIP.uEi-BYi_M-Rnv9abB82xqwHaHa?rs=1&pid=ImgDetMain', 'site': '', 'description': '', 'firstName': 'Thomas', 'lastName': 'Poupard', 'phoneNumber': '06 29 24 07 06', 'nickname': '', 'token': 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpZFVzZXIiOiI2OTMwZTZlYy03NThjLTQ4ZTAtODE1ZS1kMjRiMmFlNmY5Y2UiLCJleHAiOjE3NTE4Nzc5MTB9.b24X5A_hqlLG3DX7Pzpa_6NBu5Fp6cyPF0Vu-EKM8SYiludDdHA0EiY9OscF4ncL8k5B7BygG1QuwXvbiyw2rQ'}
-
+user = {'id': 'f14efbc8-c240-4774-9782-f4520039db60', 'type': 'lessor', 'mail': 'hugo.antreassian@gmail.com', 'password': '', 'registerDate': '2024-07-10T17:38:24.9045Z', 'lastConnectionDate': '2024-07-10T17:38:24.9045Z', 'avatar': '', 'site': '', 'description': '', 'firstName': 'Hugo', 'lastName': 'Antreassian', 'phoneNumber': '06 23 00 01 48', 'nickname': '', 'token': 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpZFVzZXIiOiJmMTRlZmJjOC1jMjQwLTQ3NzQtOTc4Mi1mNDUyMDAzOWRiNjAiLCJleHAiOjE3NTIxNzkzNTV9.-vdAFHiKL4J5CwqxbQmL8zEVTbt-hMEEJBitAWTHcr3TMbY3OOtjC2dFwsZ2jXu9E9qUvkY9MmxIsz3lthTdFg'}
+#login_ui(window)
 dashboard_ui(window, user)
 
 window.mainloop()

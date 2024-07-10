@@ -7,7 +7,7 @@ import requests
 def fetchAllTickets(usertoken: str):
 
     r = requests.get(
-        'http://77.237.246.8:8080/api/ticket',
+        'https://api.paris-caretaker-services.xyz/api/ticket',
         headers={
             "Authorization": usertoken,
         }
@@ -21,10 +21,8 @@ def fetchAllTickets(usertoken: str):
 def dashboard_ui(root: Tk, our_user: dict = {}):
     root.state('zoomed')
 
-    admintoken = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpZFVzZXIiOiIxMjNlNDU2Ny1lODliLTEyZDMtYTQ1Ni00MjYyMTQxNzQwMDAiLCJleHAiOjE3NTAzMzI4MDl9.FShzAVpmmEOTSfvL1NyQWjfzIP48EOM-qjuumeMAbkJz_gnYYHEnc3gyNC-8PQdtaAN-TnM2tTtJviD_4oeCZw"
-
     # Fetch tickets using the provided token (example implementation)
-    tickets = fetchAllTickets(admintoken).get("chat", [])
+    tickets = fetchAllTickets(our_user["token"]).get("chat", [])
 
     # Main UI code as defined before
     main_frame = tk.Frame(root)
@@ -74,13 +72,6 @@ def dashboard_ui(root: Tk, our_user: dict = {}):
 
     details_frame = tk.Frame(content_frame)
     details_frame.pack(anchor=tk.W, pady=10)
-
-    assignee_frame = tk.Frame(content_frame)
-    assignee_frame.pack(anchor=tk.W, pady=10)
-    assignee_label = tk.Label(assignee_frame, text="Assignee:", font=("Arial", 12, "bold"))
-    assignee_label.pack(side=tk.LEFT)
-    assignee_value = tk.Label(assignee_frame, text="Unassigned", font=("Arial", 12))
-    assignee_value.pack(side=tk.LEFT)
 
     chat_frame = tk.Frame(content_frame)
     chat_frame.pack(anchor=tk.W, pady=10, fill=tk.BOTH, expand=True)
@@ -148,10 +139,12 @@ def dashboard_ui(root: Tk, our_user: dict = {}):
         chat_history.config(state=tk.NORMAL)
         chat_history.delete("1.0", tk.END)
 
+        print('https://api.paris-caretaker-services.xyz/api/chat/' + chatId_value.get())
+
         r = requests.get(
-            'http://77.237.246.8:8080/api/chat/' + tickets[ticket_listbox.curselection()[0]]["id"],
+            'https://api.paris-caretaker-services.xyz/api/chat/' + chatId_value.get(),
             headers={
-                "Authorization": admintoken,
+                "Authorization": our_user["token"],
             }
         )
 
@@ -167,7 +160,7 @@ def dashboard_ui(root: Tk, our_user: dict = {}):
 
         if message:
             r = requests.post(
-                'http://77.237.246.8:8080/api/chat',
+                "https://api.paris-caretaker-services.xyz/api/chat/",
                 headers={
                     "Authorization": our_user.get("token"),
                 },
@@ -207,7 +200,7 @@ def dashboard_ui(root: Tk, our_user: dict = {}):
         print(returnTicket)
 
         r = requests.put(
-                'http://localhost:8080/api/ticket/' + id_value.get(),
+                'https://api.paris-caretaker-services.xyz/api/ticket/' + id_value.get(),
                 headers={
                     "Authorization": our_user.get("token"),
                 },
@@ -217,7 +210,7 @@ def dashboard_ui(root: Tk, our_user: dict = {}):
         if r.status_code == 200:
             print("Ticket updated")
 
-            fetchAllTickets(admintoken)
+            fetchAllTickets(our_user["token"])
 
     # Save button
     save_button = tk.Button(details_frame, text="Save", command=save_ticket)

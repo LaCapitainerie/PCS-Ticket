@@ -5,7 +5,7 @@ from Dashboard import dashboard_ui
 import requests
 
 
-def login_ui(window:tk.Tk, user):
+def login_ui(window:tk.Tk):
     window.state('zoomed')
 
     image = Image.open("./resources/logo.png")
@@ -34,7 +34,7 @@ def login_ui(window:tk.Tk, user):
                 "mail": email,
                 "password": password
             }
-            response = requests.post("http://77.237.246.8:8080/api" + "/user/login", json=payload)
+            response = requests.post("https://api.paris-caretaker-services.xyz/api" + "/user/login", json=payload)
 
             if response.status_code == 401:
                 print(f"Accès non autorisé  {email} {password}")
